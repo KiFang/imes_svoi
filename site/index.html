@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Свои в ИМЭС</title>
+<meta name="description" content="Группы по интересам, события и граф интересов студентов ИМЭС">
+<meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+<script src="js/config.js"></script>
+</head>
+<body>
+<header class="hdr" id="hdr"><div class="wrap">
+  <button class="logo" data-act="nav" data-v="feed" aria-label="Свои в ИМЭС, на главную"><span class="logo-mark">С</span><span>Свои<small>группы по интересам ИМЭС</small></span></button>
+  <nav class="nav" aria-label="Разделы" id="nav"></nav>
+  <span class="sp"></span>
+  <button class="ibtn" data-act="theme" aria-label="Сменить тему" id="themeBtn"></button>
+  <span id="meSlot"></span>
+</div></header>
+
+<main class="wrap">
+  <section class="view" id="v-feed"></section>
+  <section class="view" id="v-groups"></section>
+  <section class="view" id="v-graph"></section>
+  <section class="view" id="v-profile"></section>
+  <footer class="foot" id="foot"></footer>
+</main>
+
+<nav class="bnav" id="bnav" aria-label="Разделы"></nav>
+<div class="scrim" id="scrim" data-act="close-all"></div>
+<aside class="sheet" id="sheet" aria-hidden="true" role="dialog" aria-label="Группа"></aside>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Регистрация"><div class="mbox" id="mbox"></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+
+<div id="boot" style="padding:40px 0;color:var(--muted)">Загружаем…</div>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

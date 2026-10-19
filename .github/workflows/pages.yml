@@ -1,0 +1,54 @@
+name: Deploy site
+
+# Публикует папку site/ на GitHub Pages при каждом изменении в main.
+# Настройки сервера берутся из переменных репозитория (Settings -> Secrets and variables -> Actions -> Variables):
+# SUPABASE_URL, SUPABASE_ANON_KEY, TELEGRAM_BOT. Если их нет, сайт включится в демо-режиме.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Проверка правил и демо-режима
+        run: node --test
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Записать настройки сервера
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
+          TELEGRAM_BOT: ${{ vars.TELEGRAM_BOT }}
+        run: |
+          node -e '
+            const c = { SUPABASE_URL: process.env.SUPABASE_URL || "", SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY || "", TELEGRAM_BOT: process.env.TELEGRAM_BOT || "" };
+            require("fs").writeFileSync("site/js/config.js", "window.SVOI_CONFIG = " + JSON.stringify(c, null, 2) + ";\n");
+          '
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4

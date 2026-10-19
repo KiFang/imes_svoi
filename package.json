@@ -1,0 +1,6 @@
+{
+  "name": "imes_svoi",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node --test", "start": "npx serve site" }
+}
