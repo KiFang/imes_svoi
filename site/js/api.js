@@ -17,16 +17,21 @@ const browserStorage = {
   set: (k, v) => localStorage.setItem(k, v)
 };
 
+// Возвращает слой данных и первые данные для отрисовки.
+// Если сервер настроен, но не отвечает, сайт не ломается: включается демо-режим и ставится флаг fallback.
 export async function createApi() {
   const cfg = window.SVOI_CONFIG || {};
-  if (cfg.SUPABASE_URL && cfg.SUPABASE_ANON_KEY) {
+  const configured = !!(cfg.SUPABASE_URL && cfg.SUPABASE_ANON_KEY);
+  if (configured) {
     try {
       if (!window.supabase) await loadScript(SB_CDN);
       const sb = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY, { auth: { persistSession: true, autoRefreshToken: true } });
-      return { api: createSupabaseApi(cfg, sb), sb, cfg };
+      const api = createSupabaseApi(cfg, sb);
+      return { api, sb, cfg, data: await api.init(), fallback: false };
     } catch (e) {
-      console.warn('Supabase недоступен, включён демо-режим', e);
+      console.warn('Сервер недоступен, включён демо-режим', e);
     }
   }
-  return { api: createMockApi(browserStorage), sb: null, cfg };
+  const api = createMockApi(browserStorage);
+  return { api, sb: null, cfg, data: await api.init(), fallback: configured };
 }

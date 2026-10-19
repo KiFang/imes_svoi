@@ -2,8 +2,7 @@
 import { createApi } from './api.js';
 import { LIMIT, isFull, joinBlock } from './rules.js';
 
-const { api } = await createApi();
-const D = await api.init();
+const { api, data: D, fallback } = await createApi();
 
 var $=function(s,r){return (r||document).querySelector(s)}, $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
 var esc=function(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
@@ -570,7 +569,7 @@ if(window.matchMedia)try{matchMedia('(prefers-color-scheme: dark)').addEventList
 
 /* ---------- init ---------- */
 try{var th=localStorage.getItem('svoi-theme');if(th)document.documentElement.setAttribute('data-theme',th)}catch(e){}
-var ft=$('#foot');if(ft)ft.textContent=api.mode==='mock'?'Демо-режим: данные хранятся только в этом браузере, письма и проверка студенческого имитируются. Группы и события взяты как примеры.':'Свои в ИМЭС. Данные хранятся в базе проекта.';
+var ft=$('#foot');if(ft)ft.textContent=fallback?'Сервер сейчас недоступен. Показаны демонстрационные данные, изменения сохраняются только в этом браузере.':api.mode==='mock'?'Демо-режим: данные хранятся только в этом браузере, письма и проверка студенческого имитируются. Группы и события взяты как примеры.':'Свои в ИМЭС. Данные хранятся в базе проекта.';
 renderFeed();renderGroups();renderProfile();renderGraphPanel();buildGraph();
 var bt=$('#boot');if(bt)bt.remove();
 var h0=location.hash.slice(1);setView(['feed','groups','graph','profile'].indexOf(h0)>-1?h0:'feed');
